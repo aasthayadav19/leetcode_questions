@@ -6,50 +6,58 @@
  *     TreeNode *right;
  *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
  *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left),
- * right(right) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
     vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
-        vector<vector<int>> ans;
+        vector<vector<int>> res;
 
-        if (root == nullptr)
-            return ans;
+        if (root == NULL)
+            return res;
 
         queue<TreeNode*> q;
+
         q.push(root);
 
-        bool leftToRight = true;
+        bool leftToRight = 1;
 
         while (!q.empty()) {
 
             int levelSize = q.size();
-            vector<int> level;
+
+            vector<int> tmp(levelSize);
+
+            int first = 0;
+            int last = levelSize - 1;
 
             while (levelSize--) {
 
-                TreeNode* temp = q.front();
+                TreeNode* t = q.front();
                 q.pop();
 
-                level.push_back(temp->val);
+                if (leftToRight) {
+                    tmp[first] = t->val;
+                    first++;
+                }
+                else {
+                    tmp[last] = t->val;
+                    last--;
+                }
 
-                if (temp->left != nullptr)
-                    q.push(temp->left);
+                if (t->left != NULL)
+                    q.push(t->left);
 
-                if (temp->right != nullptr)
-                    q.push(temp->right);
+                if (t->right != NULL)
+                    q.push(t->right);
             }
 
-            if (!leftToRight)
-                reverse(level.begin(), level.end());
+            res.push_back(tmp);
 
-            ans.push_back(level);
-
-            leftToRight = !leftToRight;
+            leftToRight = 1 - leftToRight;
         }
 
-        return ans;
+        return res;
     }
 };
