@@ -20,12 +20,12 @@ void fun (TreeNode* root){
      fun( root-> left);
 
      fun( root-> right);
-     return;
+  
 }
 
     TreeNode* invertTree(TreeNode* root) {
       fun(root);
-      
+
       return root;        
     }
 };
