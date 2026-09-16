@@ -11,6 +11,7 @@
  * };
  */
 class Solution {
+public:
     TreeNode* ans = NULL;
     void fun(TreeNode* root, int val) {
         if (root == NULL)
@@ -26,9 +27,8 @@ class Solution {
         return;
     }
 
-public:
     TreeNode* searchBST(TreeNode* root, int val) {
-        fun( root, val );
+        fun(root, val);
 
         return ans;
     }
