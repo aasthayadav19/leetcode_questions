@@ -1,0 +1,1 @@
+<h2>concatenation-of-array Notes</h2><hr>Made  a vector , then push the elements ,then again push all those elements with two same loop..
