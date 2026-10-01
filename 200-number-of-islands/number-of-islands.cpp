@@ -19,11 +19,12 @@ public:
             int col = j + y[k];
 
             if (isValid(row, col, n, m) && a[row][col] == '1' &&
-                !vis[row][col]) {
+                vis[row][col] == 0) {
 
                 dfs(a, n, m, row, col, vis);
             }
         }
+        return;
     }
     int numIslands(vector<vector<char>>& grid) {
         if (grid.empty() || grid[0].empty())
@@ -34,7 +35,7 @@ public:
 
         int res = 0;
 
-        vector<vector<bool>> vis(n, vector<bool>(m, false));
+        vector<vector<bool>> vis(n, vector<bool>(m));
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
