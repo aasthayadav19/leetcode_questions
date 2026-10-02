@@ -1,7 +1,7 @@
 class Solution {
 public:
-    int x[4] = {-1, 0, 1, 0};
-    int y[4] = {0, 1, 0, -1};
+    int x[4] = {-1, 1,0, 0};
+    int y[4] = {0, 0, -1, 1};
 
     bool valid(int i, int j, int n, int m) {
         if (i < 0 || j < 0 || i >= n || j >= m)
