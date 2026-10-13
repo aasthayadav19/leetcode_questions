@@ -1,54 +1,49 @@
 class Solution {
 public:
     int networkDelayTime(vector<vector<int>>& times, int n, int k) {
-          vector<vector<pair<int, int>>> a(n + 1);
-
-        for (int i = 0; i < times.size(); i++) {
-            int u = times[i][0];
-            int v = times[i][1];
+        int src = k;
+        src--;
+        // create adjacency list
+        vector<vector<pair<int,int>>> adj(n);
+        for(int i=0; i<times.size(); i++){
+            int s = times[i][0];
+            int d = times[i][1];
             int w = times[i][2];
-
-            a[u].push_back({v, w});
+            adj[s-1].push_back({d-1,w});
         }
+        // create min heap of pairs
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+        vector<int> dist(n,INT_MAX);
+        dist[src] = 0;
+        pq.push({0,src});
 
-        priority_queue<pair<int, int>,
-                       vector<pair<int, int>>,
-                       greater<pair<int, int>>> pq;
-
-        vector<int> dist(n + 1, INT_MAX);
-        dist[k] = 0;
-        pq.push({0, k});
-
-        while (!pq.empty()) {
-            pair<int, int> p = pq.top();
+        while(!pq.empty()){
+            pair<int,int> p = pq.top();
             pq.pop();
 
             int d = p.first;
             int node = p.second;
 
-            if (d > dist[node])
+            if(d > dist[node])
                 continue;
+            
+            // check for the neigh
+            for(int j=0; j<adj[node].size(); j++){
+                int neigh = adj[node][j].first;
+                int wt = adj[node][j].second;
 
-            for (int j = 0; j < a[node].size(); j++) {
-                int neigh = a[node][j].first;
-                int wt = a[node][j].second;
-
-                if (d + wt < dist[neigh]) {
+                if(d + wt < dist[neigh]){
                     dist[neigh] = d + wt;
-                    pq.push({dist[neigh], neigh});
+                    pq.push({d + wt, neigh});
                 }
             }
         }
-
-        int ans = 0;
-
-        for (int i = 1; i <= n; i++) {
-            if (dist[i] == INT_MAX)
-                return -1;
-
-            ans = max(ans, dist[i]);
+        int res=0;
+        for(int i=0; i<n; i++){
+            res = max(res,dist[i]);
         }
-
-        return ans;
+        if(res != INT_MAX)
+            return res;
+        return -1;
     }
 };
