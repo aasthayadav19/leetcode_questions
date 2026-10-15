@@ -1,29 +1,38 @@
 
 class Solution {
 public:
-    bool canReach(vector<vector<int>>& grid, int water) {
+    int swimInWater(vector<vector<int>>& grid) {
         int n = grid.size();
 
-        if (grid[0][0] > water)
-            return false;
-
-        vector<vector<bool>> visited(
-            n, vector<bool>(n, false)
+        vector<vector<int>> dist(
+            n, vector<int>(n, INT_MAX)
         );
 
-        queue<pair<int, int>> q;
-        q.push({0, 0});
-        visited[0][0] = true;
+        priority_queue<
+            pair<int, pair<int, int>>,
+            vector<pair<int, pair<int, int>>>,
+            greater<pair<int, pair<int, int>>>
+        > pq;
+
+        dist[0][0] = grid[0][0];
+        pq.push({grid[0][0], {0, 0}});
 
         int dr[] = {-1, 1, 0, 0};
         int dc[] = {0, 0, -1, 1};
 
-        while (!q.empty()) {
-            auto [r, c] = q.front();
-            q.pop();
+        while (!pq.empty()) {
+            auto curr = pq.top();
+            pq.pop();
+
+            int water = curr.first;
+            int r = curr.second.first;
+            int c = curr.second.second;
+
+            if (water > dist[r][c])
+                continue;
 
             if (r == n - 1 && c == n - 1)
-                return true;
+                return water;
 
             for (int k = 0; k < 4; k++) {
                 int nr = r + dr[k];
@@ -33,38 +42,17 @@ public:
                     nc < 0 || nc >= n)
                     continue;
 
-                if (visited[nr][nc])
-                    continue;
+                int newWater = max(
+                    water, grid[nr][nc]
+                );
 
-                if (grid[nr][nc] > water)
-                    continue;
-
-                visited[nr][nc] = true;
-                q.push({nr, nc});
+                if (newWater < dist[nr][nc]) {
+                    dist[nr][nc] = newWater;
+                    pq.push({newWater, {nr, nc}});
+                }
             }
         }
 
-        return false;
-    }
-
-    int swimInWater(vector<vector<int>>& grid) {
-        int n = grid.size();
-
-        int low = grid[0][0];
-        int high = n * n - 1;
-        int ans = high;
-
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-
-            if (canReach(grid, mid)) {
-                ans = mid;
-                high = mid - 1;
-            } else {
-                low = mid + 1;
-            }
-        }
-
-        return ans;
+        return -1;
     }
 };
