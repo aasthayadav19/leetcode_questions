@@ -1,5 +1,6 @@
 class Solution {
 public:
+    // binary search and bfs
     bool bfs(vector<vector<int>>& a, int n, int m, int money) {
         int x[4] = {-1, 1, 0, 0};
         int y[4] = {0, 0, -1, 1};
