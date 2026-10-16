@@ -1,57 +1,75 @@
 class Solution {
 public:
-    int swimInWater(vector<vector<int>>& grid) {
-        int n = grid.size();
+    bool bfs(vector<vector<int>>& a, int n, int m, int money) {
+        int x[4] = {-1, 1, 0, 0};
+        int y[4] = {0, 0, -1, 1};
 
-        vector<vector<int>> dist(
-            n, vector<int>(n, INT_MAX)
-        );
+        queue<pair<int, int>> q;
+        vector<vector<int>> vis(n, vector<int>(m, 0));
 
-        priority_queue<
-            pair<int, pair<int, int>>,
-            vector<pair<int, pair<int, int>>>,
-            greater<pair<int, pair<int, int>>>
-        > pq;
+        if (a[0][0] > money)
+            return false;
 
-        dist[0][0] = grid[0][0];
-        pq.push({grid[0][0], {0, 0}});
+        q.push({0, 0});
+        vis[0][0] = 1;
 
-        int dr[] = {-1, 1, 0, 0};
-        int dc[] = {0, 0, -1, 1};
+        while (!q.empty()) {
+            pair<int, int> p = q.front();
+            q.pop();
 
-        while (!pq.empty()) {
-            auto curr = pq.top();
-            pq.pop();
+            int row = p.first;
+            int col = p.second;
 
-            int water = curr.first;
-            int r = curr.second.first;
-            int c = curr.second.second;
-
-            if (water > dist[r][c])
-                continue;
-
-            if (r == n - 1 && c == n - 1)
-                return water;
+            if (row == n - 1 && col == m - 1)
+                return true;
 
             for (int k = 0; k < 4; k++) {
-                int nr = r + dr[k];
-                int nc = c + dc[k];
+                int r = row + x[k];
+                int c = col + y[k];
 
-                if (nr < 0 || nr >= n ||
-                    nc < 0 || nc >= n)
+                if (r < 0 || r >= n || c < 0 || c >= m)
                     continue;
 
-                int newWater = max(
-                    water, grid[nr][nc]
-                );
+                if (vis[r][c])
+                    continue;
 
-                if (newWater < dist[nr][nc]) {
-                    dist[nr][nc] = newWater;
-                    pq.push({newWater, {nr, nc}});
-                }
+                if (a[r][c] > money)
+                    continue;
+
+                q.push({r, c});
+                vis[r][c] = 1;
             }
         }
 
-        return -1;
+        return false;
+    }
+
+    int swimInWater(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+
+        int low = grid[0][0];
+        int high = grid[0][0];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                high = max(high, grid[i][j]);
+            }
+        }
+
+        int res = high;
+
+        while (low <= high) {
+            int guess = low + (high - low) / 2;
+
+            if (bfs(grid, n, m, guess)) {
+                res = guess;
+                high = guess - 1;
+            } else {
+                low = guess + 1;
+            }
+        }
+
+        return res;
     }
 };
