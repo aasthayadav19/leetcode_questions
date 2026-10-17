@@ -1,70 +1,56 @@
 class Solution {
 public:
-    bool bfs(vector<vector<int>>& a, int n, int m, int money) {
-        int i, j;
-        int x[4] = {1, -1, 0, 0};
-        int y[4] = {0, 0, 1, -1};
+    int swimInWater(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
 
-        queue<pair<int, int>> q;
-        vector<vector<int>> vis(n, vector<int>(m, 0));
+        priority_queue<
+            pair<int, pair<int, int>>,
+            vector<pair<int, pair<int, int>>>,
+            greater<pair<int, pair<int, int>>>
+        > pq;
 
-        q.push({0, 0});
-        vis[0][0] = 1;
+        vector<vector<int>> res(n, vector<int>(m, 1e8));
+        
+        res[0][0] = grid[0][0];
+        pq.push({grid[0][0], {0, 0}});
+        
+        
 
-        while (!q.empty()) {
-            pair<int, int> p = q.front();
-            q.pop();
+        int x[4] = {-1, 1, 0, 0};
+        int y[4] = {0, 0, -1, 1};
 
-            int row = p.first;
-            int col = p.second;
+        while (!pq.empty()) {
+            pair<int, pair<int, int>>p = pq.top();
+            pq.pop();
+
+            int water = p.first;
+            int row = p.second.first;
+            int col = p.second.second;
+
+            if (water > res[row][col])
+                continue;
 
             if (row == n - 1 && col == m - 1)
-                return true;
+                return water;
 
             for (int k = 0; k < 4; k++) {
                 int r = row + x[k];
                 int c = col + y[k];
 
-                if (r >= 0 && r < n &&
-                    c >= 0 && c < m &&
-                    vis[r][c] == 0 &&
-                    money >= a[r][c]) {
+                if (r < 0 || r >= n ||
+                    c < 0 || c >= m)
+                    continue;
 
-                    q.push({r, c});
-                    vis[r][c] = 1;
+                int newWater = max(water, grid[r][c]);
+
+                if (newWater < res[r][c]) {
+                    res[r][c] = newWater;
+                    pq.push({newWater, {r, c}});
                 }
             }
         }
 
-        return false;
-    }
-
-    int swimInWater(vector<vector<int>>& grid) {
-        int n = grid.size();
-        int m = grid[0].size();
-
-        int low = grid[0][0];
-        int high = 0;
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                high = max(high, grid[i][j]);
-            }
-        }
-
-        int res = 0;
-
-        while (low <= high) {
-            int guess = (low + high) / 2;
-
-            if (bfs(grid, n, m, guess)) {
-                res = guess;
-                high = guess - 1;
-            } else {
-                low = guess + 1;
-            }
-        }
-
-        return res;
+        return res[n-1] [m-1];
     }
 };
