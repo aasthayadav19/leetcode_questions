@@ -1,9 +1,7 @@
-
 class Solution {
 public:
     int ladderLength(string beginWord, string endWord,
                      vector<string>& wordList) {
-        
         unordered_map<string, int> f;
 
         for (int i = 0; i < wordList.size(); i++) {
@@ -27,6 +25,7 @@ public:
             q.pop();
 
             string s = p.first;
+
             int val = p.second;
 
             if (s == endWord) {
@@ -52,7 +51,6 @@ public:
                 s[i] = c;
             }
         }
-
         return 0;
     }
 };
