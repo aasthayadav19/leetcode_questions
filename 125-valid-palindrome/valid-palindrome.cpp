@@ -5,22 +5,22 @@ public:
         int i = 0;
         int j = n - 1;
 
-        while (i < j) {
-            if (!isalnum(s[i])) {
+        while( i< j){
+            if(!isalnum(s[i])){
                 i++;
-            } 
-            else if (!isalnum(s[j])) {
+            }
+            else if(!isalnum(s[j])){
                 j--;
-
-            } 
-            else if (tolower(s[i]) != tolower(s[j])) {
+            }
+            else if( tolower(s[i]) != tolower(s[j])){
                 return false;
-                
-            } else {
+            }
+            else{
                 i++;
                 j--;
             }
         }
         return true;
+
     }
 };
